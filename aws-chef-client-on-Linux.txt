@@ -1,0 +1,12 @@
+#!/bin/bash -v 
+#yum -y update
+mkdir /root/cookbooks
+cd /root
+curl -L https://www.opscode.com/chef/install.sh | bash -s -- -v 11.8.2
+cd /root/cookbooks
+wget -O security.zip https://s3.amazonaws.com/manak0023/security.zip
+unzip security.zip
+cd /root
+export HOME=/root
+
+chef-client -z -o recipe['security']   >> 1.txt

@@ -1,0 +1,35 @@
+<powershell>
+cd c:\ 
+
+$source = 'https://opscode-omnibus-packages.s3.amazonaws.com/windows/2008r2/x86_64/chef-client-11.8.2-1.windows.msi' 
+
+$destination = "C:\install.msi"
+
+$wc = New-Object System.Net.WebClient
+
+$wc.DownloadFile($source, $destination)
+
+Start-Process -Wait msiexec  -ArgumentList " /i C:\install.msi /quiet /log c:\install.log" 
+
+Start-Process -Wait msiexec  -ArgumentList " /i C:\install.msi /quiet /log c:\ChefClientServiceinstall.log ADDLOCAL=ChefServiceFeature " 
+
+mkdir "c:\users\Administrator\cookbooks"
+
+$source = "https://s3.amazonaws.com/manak0023/security.zip" 
+
+$destination = "C:\users\Administrator\cookbooks"
+
+$wc = New-Object System.Net.WebClient
+
+$wc.DownloadFile($source, $destination)
+
+
+cd "C:\users\Administrator\cookbooks"
+
+tar -xvf security.zip
+
+cd  "C:\users\Administrator"
+
+chef-client -z -o recipe['security']
+
+</powershell>
